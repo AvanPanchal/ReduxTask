@@ -2,31 +2,63 @@ import React, { Component } from "react";
 import {
     View,
     Text,
-    StyleSheet, FlatList
+    StyleSheet, FlatList, ScrollView
 } from "react-native";
 // import { connect } from 'react-redux';
 import withUserdata from '../redux/hoc/withUserdata';
-
 class Userlist extends Component {
+
+    componentDidMount() {
+        const {
+            value: { firstTime },
+            userdataDetails,
+        } = this.props;
+        if (firstTime == false) {
+            userdataDetails();
+        }
+    }
+
+
+    finddata = (id) => {
+        const {
+            value: { users },
+            navigation: { navigate },
+        } = this.props;
+        console.log("id", id);
+        let resdata = users.filter(user => user.id === id)
+        if (resdata) {
+            console.log("resdata", resdata);
+            this.props.navigation.navigate('UserDetails', {
+                userdata: resdata[0]
+            });
+        }
+        else {
+            alert('not working')
+        }
+    }
     render() {
+        // console.log('Value', this.props.value);
         return (
             <View>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>User List</Text>
                 </View>
                 <View style={styles.container}>
-                    <Text>Userlist</Text>
+                    <Text style={styles.txtstyle}>Userlist</Text>
                 </View>
                 <View>
+
                     <FlatList
-                        // keyExtractor={(item) => item.key}
                         keyExtractor={(item, index) => {
                             return index.toString();
                         }}
-                        data={value}
+                        data={this.props.value.users}
                         renderItem={({ item }) =>
-                            <View style={{ flexDirection: 'row', borderWidth: 1, borderColor: '#709a2a' }}>
-                                <Text style={{ marginRight: 15 }}>{item.email}</Text>
+                            <View style={styles.userdatastyle}>
+                                <Text style={styles.usertextstyle}
+                                    onPress={() => this.finddata(item.id)}
+                                >{item.email}</Text>
+                                <Text>{item.id}</Text>
                             </View>
                         }
                     />
@@ -39,13 +71,30 @@ export default withUserdata(Userlist);
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        marginHorizontal: '10%',
-        marginTop: '2%',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    txtstyle: {
+        fontSize: 25,
+        color: '#709a2a',
+        fontWeight: 'bold'
+    },
+    userdatastyle: {
+        flexDirection: 'row',
+        borderWidth: 0.5,
+        padding: 20,
+        borderColor: 'white',
+        marginHorizontal: 5,
+        backgroundColor: '#709a2a',
+        borderRadius: 5,
+    },
+    usertextstyle: {
+        fontSize: 20,
+        color: 'white'
     },
     header: {
         backgroundColor: '#709a2a',
-        height: '30%',
+        height: 60,
         justifyContent: 'center',
         alignItems: 'center'
     },

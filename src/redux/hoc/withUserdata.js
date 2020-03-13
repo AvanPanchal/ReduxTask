@@ -4,8 +4,6 @@ import { userdataDetails } from '../actions/userdataAction';
 const mapDispatchToProps = dispatch => ({
     userdataDetails: (initialstate) => (
         dispatch(userdataDetails(initialstate)))
-
-
 })
 
 const mapstatetoprops = (initialstate) => {
